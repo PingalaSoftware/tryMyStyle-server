@@ -1,0 +1,37 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... -->
+</head>
+<body>
+    <h1>Admin Page</h1>
+    <form id="urlForm">
+        <label for="newUrl">New URL:</label>
+        <input type="text" id="newUrl" placeholder="Enter new URL">
+        <button type="submit">Change URL</button>
+    </form>
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const newUrl = document.getElementById('newUrl').value;
+
+            fetch('/update-url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `newUrl=${newUrl}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
