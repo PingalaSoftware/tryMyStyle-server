@@ -6,6 +6,7 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 const readline = require('readline');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 app.use(cors());
 // let url = 'https://trymystyle.co.in/';
@@ -37,6 +38,30 @@ app.post('/update-url', (req, res) => {
     } else {
         res.status(400).json({ error: 'Invalid URL' });
     }
+});
+
+app.post('/connect-wifi', (req, res) => {
+  const { ssid, password } = req.body;
+
+  // Use the exec function to run Wi-Fi connection commands
+
+  exec(`sudo nmcli device wifi connect ${ssid} password ${password}`, (error, stdout, stderr) => {
+      if (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Failed to connect to Wi-Fi' });
+          return;
+      }
+
+      console.log('Wi-Fi connection result:', stdout);
+      console.error('Wi-Fi connection error:', stderr);
+
+      // Check stdout or stderr for the connection result
+      if (stdout.includes('successfully activated')) {
+          res.json({ message: 'Connected to Wi-Fi' });
+      } else {
+          res.status(500).json({ error: 'Failed to connect to Wi-Fi' });
+      }
+  });
 });
 
 app.listen(port, () => {

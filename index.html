@@ -1,4 +1,3 @@
-<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,8 +7,17 @@
     <h1>Admin Page</h1>
     <form id="urlForm">
         <label for="newUrl">New URL:</label>
-        <input type="text" id="newUrl" placeholder="Enter new URL">
+        <input type="text" id="newUrl" name="newUrl" placeholder="Enter new URL">
         <button type="submit">Change URL</button>
+    </form>
+
+    <h2>Connect to Wi-Fi</h2>
+    <form id="wifiForm">
+        <label for="ssid">SSID:</label>
+        <input type="text" id="ssid" name="ssid" placeholder="Enter SSID">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter Wi-Fi password">
+        <button type="submit">Connect Wi-Fi</button>
     </form>
 
     <script>
@@ -23,6 +31,27 @@
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: `newUrl=${newUrl}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('wifiForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const ssid = document.getElementById('ssid').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/connect-wifi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `ssid=${ssid}&password=${password}`,
             })
             .then(response => response.json())
             .then(data => {
