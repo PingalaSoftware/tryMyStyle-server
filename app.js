@@ -45,32 +45,32 @@ app.listen(port, () => {
 
 // Function to update the URL in .bashrc
 function updateBashrcUrl(newUrl, callback) {
-    const bashrcPath = '/home/aaron/.bashrc'; // Update with your actual path
-    const rl = readline.createInterface({
-        input: fs.createReadStream(bashrcPath),
-        output: process.stdout,
-        terminal: false
-    });
+  const bashrcPath = '/home/aaron/.bashrc'; // Update with your actual path
+  const rl = readline.createInterface({
+      input: fs.createReadStream(bashrcPath),
+      output: process.stdout,
+      terminal: false
+  });
 
-    const newLines = [];
-    let updated = false;
+  const newLines = [];
+  let updated = false;
 
-    rl.on('line', (line) => {
-        if (line.startsWith("chromium-browser --start-fullscreen")) {
-            updated = true;
-            newLines.push(`chromium-browser --start-fullscreen ${newUrl}`);
-        } else {
-            newLines.push(line);
-        }
-    });
+  rl.on('line', (line) => {
+      if (line.startsWith("chromium-browser --start-fullscreen --incognito")) {
+          updated = true;
+          newLines.push(`chromium-browser --start-fullscreen --incognito '${newUrl}'`);
+      } else {
+          newLines.push(line);
+      }
+  });
 
-    rl.on('close', () => {
-        if (updated) {
-            // Update .bashrc with the new lines
-            fs.writeFileSync(bashrcPath, newLines.join('\n'));
-            callback(null);
-        } else {
-            callback('URL not found in .bashrc');
-        }
-    });
+  rl.on('close', () => {
+      if (updated) {
+          // Update .bashrc with the new lines
+          fs.writeFileSync(bashrcPath, newLines.join('\n'));
+          callback(null);
+      } else {
+          callback('URL not found in .bashrc');
+      }
+  });
 }
