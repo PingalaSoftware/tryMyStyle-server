@@ -43,25 +43,25 @@ app.post('/update-url', (req, res) => {
 app.post('/connect-wifi', (req, res) => {
   const { ssid, password } = req.body;
 
-  // Use the exec function to run Wi-Fi connection commands
-
   exec(`sudo nmcli device wifi connect ${ssid} password ${password}`, (error, stdout, stderr) => {
-      if (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Failed to connect to Wi-Fi' });
-          return;
-      }
+    if (error) {
+        console.error('Error:', error);
+        console.error('Wi-Fi connection error:', stderr);
+        res.status(500).json({ error: 'Failed to connect to Wi-Fi' });
+        return;
+    }
 
-      console.log('Wi-Fi connection result:', stdout);
-      console.error('Wi-Fi connection error:', stderr);
+    console.log('Wi-Fi connection result:', stdout);
 
-      // Check stdout or stderr for the connection result
-      if (stdout.includes('successfully activated')) {
-          res.json({ message: 'Connected to Wi-Fi' });
-      } else {
-          res.status(500).json({ error: 'Failed to connect to Wi-Fi' });
-      }
-  });
+    // Check stdout or stderr for the connection result
+    if (stdout.includes('successfully activated')) {
+        res.json({ message: 'Connected to Wi-Fi' });
+    } else {
+        console.error('Wi-Fi connection error:', stderr);
+        res.status(500).json({ error: 'Failed to connect to Wi-Fi' });
+    }
+});
+
 });
 
 app.listen(port, () => {
